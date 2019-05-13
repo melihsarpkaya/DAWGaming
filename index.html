@@ -1,0 +1,62 @@
+<html>
+<head>
+        <script src="./NexusUI.js"></script>
+        <script src="./Tone.js"></script>
+</head>
+<body>
+    <div id="piano"></div>
+
+</body>
+
+<script>
+    var synth = new Tone.Synth().toMaster();
+        var piano = new Nexus.Piano('#piano',{
+            'size': [500,125],
+            'mode': 'button',  // 'button', 'toggle', or 'impulse'
+            'lowNote': 24,
+            'highNote': 60
+        });
+        var bol=false;
+        var osc={};
+
+        piano.on('change',function(v) {
+        //    random();
+        console.log(v);
+        if(!bol){
+        osc = new Tone.Oscillator((50+v.note), "sine3").toMaster().start();
+        osc.partialCount = 50
+        osc.phase = 180
+        }
+        else{
+            osc.stop();
+        }
+
+        bol=!bol;
+        });
+
+
+function random()
+{
+    for(let i=0;i<500;i++)
+    {
+        var rand=(Math.random() * 500) + 1;
+        var osc={};
+
+        osc = new Tone.Oscillator(rand, "sine3").toMaster().start();
+        osc.partialCount = 50
+        osc.phase = 180
+
+        setTimeout(() => {
+            osc.stop();
+        }, 1);
+    }
+    
+}
+
+function song(time){
+    bassSynth.triggerAttackRelease('c1', '8n', time);
+    console.log(time);
+}
+
+        </script>
+</html>
