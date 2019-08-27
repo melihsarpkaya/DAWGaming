@@ -1,62 +1,86 @@
 <html>
+
 <head>
-        <script src="./NexusUI.js"></script>
-        <script src="./Tone.js"></script>
+    <script src="./NexusUI.js"></script>
+    <script src="./Tone.js"></script>
+    <script src="./jquery-3.4.1.slim.min.js"></script>
 </head>
+
 <body>
     <div id="piano"></div>
+    <div id='count'>0</div>
+    <button id='BtDecrease'>-</button>
+    <button id='BtIncrease'>+</button>
+
 
 </body>
 
 <script>
+    $(function () {
+        $('#BtIncrease').on('click', function () {
+            let count = parseInt($('#count').text());
+            count = count + 1;
+            $('#count').html(count);
+            console.log(count);
+        });
+    })
+
+    $(function () {
+        $('#BtDecrease').on('click', function () {
+            let count = parseInt($('#count').text());
+            if (count > 1) {
+                count = count - 1;
+            }
+            $('#count').html(count);
+            console.log(count);
+        });
+    })
+
+
     var synth = new Tone.Synth().toMaster();
-        var piano = new Nexus.Piano('#piano',{
-            'size': [500,125],
-            'mode': 'button',  // 'button', 'toggle', or 'impulse'
-            'lowNote': 24,
-            'highNote': 60
-        });
-        var bol=false;
-        var osc={};
+    var piano = new Nexus.Piano('#piano', {
+        'size': [500, 125],
+        'mode': 'button', // 'button', 'toggle', or 'impulse'
+        'lowNote': 24,
+        'highNote': 60
+    });
+    var bol = false;
+    var osc = {};
 
-        piano.on('change',function(v) {
-        //    random();
+    piano.on('change', function (v) {
         console.log(v);
-        if(!bol){
-        osc = new Tone.Oscillator((50+v.note), "sine3").toMaster().start();
-        osc.partialCount = 50
-        osc.phase = 180
-        }
-        else{
+        if (!bol) {
+            let octv = parseInt($('#count').text()) * 7;
+            osc = new Tone.Oscillator((octv + v.note), "sine3").toMaster().start();
+            osc.partialCount = 50
+            osc.phase = 180
+        } else {
             osc.stop();
         }
 
-        bol=!bol;
-        });
+        bol = !bol;
+    });
 
+    function random() {
+        for (let i = 0; i < 500; i++) {
+            var rand = (Math.random() * 500) + 1;
+            var osc = {};
 
-function random()
-{
-    for(let i=0;i<500;i++)
-    {
-        var rand=(Math.random() * 500) + 1;
-        var osc={};
+            osc = new Tone.Oscillator(rand, "sine3").toMaster().start();
+            osc.partialCount = 50
+            osc.phase = 180
 
-        osc = new Tone.Oscillator(rand, "sine3").toMaster().start();
-        osc.partialCount = 50
-        osc.phase = 180
+            setTimeout(() => {
+                osc.stop();
+            }, 1);
+        }
 
-        setTimeout(() => {
-            osc.stop();
-        }, 1);
     }
-    
-}
 
-function song(time){
-    bassSynth.triggerAttackRelease('c1', '8n', time);
-    console.log(time);
-}
+    function song(time) {
+        bassSynth.triggerAttackRelease('c1', '8n', time);
+        console.log(time);
+    }
+</script>
 
-        </script>
 </html>
